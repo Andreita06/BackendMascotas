@@ -1,6 +1,6 @@
 //Importar express
 const express = require('express');
-
+require('dotenv').config();
 //Importar mongoose
 const mongoose = require('mongoose');
 //Importar url de conexión a la BD
@@ -39,6 +39,7 @@ class Server {
             }
           ));
 
+          
         // Rutas
         const router = express.Router();
         router.get('/', (req, res) => {

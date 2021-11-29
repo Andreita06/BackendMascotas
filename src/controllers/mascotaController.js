@@ -1,23 +1,34 @@
 // Se crea la clase para administrar las mascotas
 const mascotas = require('../models/mascota');
 
+const jwt = require('jsonwebtoken');
+const TokenController = require('./tokenController');
+
 class MascotasController {
 
     constructor() {
+        this.tokenC = new TokenController();
     }
     // Para registar las mascotas
-    registrarMascotas(req, res) {
-        mascotas.create(req.body, (error, data) => {
+    registrarMascotas = (req, res) => {
+
+        let { tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia } = req.body;
+
+        let token = this.tokenC.getToken(req);
+        let decode = jwt.decode(token, process.env.JWT_PRIVATE_TOKEN)
+        let usuario_id= decode.id;
+
+        mascotas.create({ tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia, usuario_id }, (error, doc) => {
             if (error) {
                 res.status(500).json({ error });
             } else {
-                res.status(201).json(data);
+                res.status(201).json(doc);
             }
         });
     }
 
     //Método para consultar mascota por ID
-    
+
     consultarMascotaId(req, res) {
         let id = req.params.id;
         mascotas.findById(id, (error, data) => {
@@ -30,9 +41,17 @@ class MascotasController {
     }
 
 
-    consultarMascotaId_usuario(req, res) {
-        let usuario_id = req.params.id;
-        mascotas.find({ usuario_id: usuario_id } , (error, data) => {
+    consultarMascotaId_usuario=(req, res)=> {
+        //id a partir del token
+        let token = this.tokenC.getToken(req);
+        console.log(token);
+        let decode= jwt.decode(token, process.env.JWT_PRIVATE_TOKEN);
+        let usuario_id=decode.id;
+    
+
+        //BUSQUEDA SE HACE AUTOMATICAMENTE CON EL TOKEN EN EL HEADER, NO ES NECESARIO MANDARLO POR OTRO LADO O COMO BODY   
+
+        mascotas.find({ usuario_id}, (error, data) => {
             if (error) {
                 res.status(500).json({ error });
             } else {
@@ -53,25 +72,30 @@ class MascotasController {
     }
 
     // Actualizar Mascota
-    setMascotas(req, res) {
+    setMascotas=(req, res)=> {
         //Capturar los datos del cuerpo de la petición
-        let { usuario_id, tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia } = req.body;
+        let {id, tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia } = req.body;
         //Crear un objeto con los datos capturados del cuerpo de la petición. Encargado de actualizar en el método update
         let objMascotas = {
-            usuario_id, tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia
+            tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia
         }
-        let id = req.params.id
-        
+
+        let token = this.tokenC.getToken(req);
+
+        let decode = jwt.decode(token, process.env.JWT_PRIVATE_TOKEN)
+        let usuario_id = decode.id;
+
+
         //Actualizar una mascotas por ID
-        mascotas.findByIdAndUpdate(id, { $set: objMascotas }, (error, data) => {
+        mascotas.findOneAndUpdate({ _id: id, usuario_id: usuario_id }, {$set: objMascotas}, (error, data) => {
             if (error) {
                 res.status(500).json({ error });
             } else {
-                res.status(200).json(data);
+                res.status(200).json({info:"Producto actualizado"});
             }
         });
     }
-    
+
     // Eliminar mascotas
     deleteMascotas(req, res) {
         let id = req.params.id;
