@@ -24,7 +24,7 @@ class UsuarioController {
                 if (error) {
                     res.status(500).json({ error });
                 } else {
-                    let token = jwt.sign({ id: data._id }, "M4scotAs2021JwT5678")
+                    let token = jwt.sign({ identificacion: data._id }, "M4scotAs2021JwT5678")
                     res.status(201).json({ token });
                 }
             });
@@ -86,7 +86,8 @@ class UsuarioController {
 
             } else {
                 if (doc != null && doc != undefined) {
-                    let token = jwt.sign({ identificacion: doc._identificacion }, "M4scotAs2021JwT5678")
+                    //MANTENER UNIDAD DE PALABRAS AL MOMENTO DE CREAR USUARIO, Y DECODIFICAR TOKENS: los mismos elementos que se envian son los que se decodifican
+                    let token = jwt.sign({ identificacion: doc._id }, "M4scotAs2021JwT5678")
                     res.status(200).json({
                         token,
                         doc

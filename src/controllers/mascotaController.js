@@ -15,10 +15,12 @@ class MascotasController {
         let { tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia } = req.body;
 
         let token = this.tokenC.getToken(req);
+    
         let decode = jwt.decode(token, process.env.JWT_PRIVATE_TOKEN)
-        let usuario_id= decode.id;
+        let usuario_id= decode.identificacion;
 
-        mascotas.create({ tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia, usuario_id }, (error, doc) => {
+
+        mascotas.create({ tipo_mascota, nombre_mascota, edad_mascota, raza_mascota, alergias, desc_alergia, usuario_id: usuario_id }, (error, doc) => {
             if (error) {
                 res.status(500).json({ error });
             } else {
@@ -44,9 +46,8 @@ class MascotasController {
     consultarMascotaId_usuario=(req, res)=> {
         //id a partir del token
         let token = this.tokenC.getToken(req);
-        console.log(token);
         let decode= jwt.decode(token, process.env.JWT_PRIVATE_TOKEN);
-        let usuario_id=decode.id;
+        let usuario_id=decode.identificacion;
     
 
         //BUSQUEDA SE HACE AUTOMATICAMENTE CON EL TOKEN EN EL HEADER, NO ES NECESARIO MANDARLO POR OTRO LADO O COMO BODY   
@@ -83,7 +84,7 @@ class MascotasController {
         let token = this.tokenC.getToken(req);
 
         let decode = jwt.decode(token, process.env.JWT_PRIVATE_TOKEN)
-        let usuario_id = decode.id;
+        let usuario_id = decode.identificacion;
 
 
         //Actualizar una mascotas por ID
@@ -97,15 +98,20 @@ class MascotasController {
     }
 
     // Eliminar mascotas
-    deleteMascotas(req, res) {
-        let id = req.params.id;
+    deleteMascotas=(req, res)=> {
+        let {id} = req.body;
+        //id a partir del token
+        let token = this.tokenC.getToken(req);
+        let decode= jwt.decode(token, process.env.JWT_PRIVATE_TOKEN);
+        let usuario_id=decode.identificacion;
+   
 
         //Eliminar una mascotas por ID
-        mascotas.findByIdAndRemove(id, (error, data) => {
+        mascotas.findOneAndRemove({_id:id, usuario_id}, (error, doc) => {
             if (error) {
                 res.status(500).json({ error });
             } else {
-                res.status(200).json(data);
+                res.status(200).json(doc);
             }
         });
     }
