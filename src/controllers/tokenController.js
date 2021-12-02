@@ -8,18 +8,18 @@ class TokenController{
     }
 
     //Funcion para verificar si usuario esta autenticado o no
-    verifyAuth=(req, res, next)=>{
-        //Captura de token
-        const token = this.getToken(req);
-        //verficacion de token, puede devolver error o un decode
-        jwt.verify(token, process.env.JWT_PRIVATE_KEY, (error,decode)=>{
-            if (error){
-                res.status(401).json({info: 'Usuario no autorizado'});
-            }else{
-                next();
-            }
-        });
-    }
+    // verifyAuth=(req, res, next)=>{
+    //     //Captura de token
+    //     const token = this.getToken(req);
+    //     //verficacion de token, puede devolver error o un decode
+    //     jwt.verify(token, process.env.JWT_PRIVATE_KEY, (error,decode)=>{
+    //         if (error){
+    //             res.status(401).json({info: 'Usuario no autorizado'});
+    //         }else{
+    //             next();
+    //         }
+    //     });
+    // }
 
     //Properties Initializer
 

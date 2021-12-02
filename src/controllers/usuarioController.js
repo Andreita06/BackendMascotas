@@ -8,7 +8,7 @@ class UsuarioController {
     constructor() {
     }
     // Para registar los usuarios
-    registrar(req, res) {
+    registrar=(req, res)=> {
         let objUser = req.body;
         if (objUser.identificacion &&
             objUser.primernombre &&
@@ -36,7 +36,7 @@ class UsuarioController {
     }
 
     //Método y ruta para consultar todos los usuarios
-    getUsuarios(req, res) {
+    getUsuarios=(req, res)=> {
         usuario.find((error, data) => {
             if (error) {
                 res.status(500).json({ error });
@@ -47,7 +47,7 @@ class UsuarioController {
     }
 
     //Update
-    setUsuario(req, res) {
+    setUsuario=(req, res)=> {
         //Capturar los datos del cuerpo de la petición
         let { id, identificacion, primernombre, segundonombre, primerapellido, segundoapellido, direccion, correo, celular, clave } = req.body;
         //Crear un objeto con los datos capturados del cuerpo de la petición. Encargado de actualizar en el método update
@@ -64,7 +64,7 @@ class UsuarioController {
         });
     }
 
-    deleteUsuario(req, res) {
+    deleteUsuario=(req, res)=> {
         let { id } = req.body;
 
         //Eliminar un usuario por ID
@@ -77,7 +77,7 @@ class UsuarioController {
         });
     }
 
-    login(req, res) {
+    login=(req, res)=> {
         let { identificacion, clave } = req.body;
         usuario.findOne({ identificacion, clave }, (error, doc) => {
             if (error) {

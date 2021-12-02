@@ -1,5 +1,8 @@
 //Importar express
 const express = require('express');
+//Importar cors
+const cors = require("cors");
+
 require('dotenv').config();
 //Importar mongoose
 const mongoose = require('mongoose');
@@ -9,8 +12,6 @@ const DatabaseConnection = require('./database/databaseConnection');
 const MascotaRouter = require('./routers/mascotaRouter');
 const UsuarioRouter = require('./routers/usuarioRouter');
 const VacunaRouter = require('./routers/vacunaRouter');
-//Importar cors
-const cors = require("cors");
 
 class Server {
     //constructor
@@ -32,12 +33,7 @@ class Server {
 
         //Indicar que las solicitudes http se trabajará en JSON
         this.app.use(express.json());
-        this.app.use(cors(
-            {
-              origin:"*",
-              methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
-            }
-          ));
+        this.app.use(cors());
 
           
         // Rutas

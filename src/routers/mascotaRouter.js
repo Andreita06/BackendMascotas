@@ -20,7 +20,7 @@ class MascotaRouter {
         //Midleware para verificar autorizacion para uso de rutas
 
 
-        this.router.use(tokenC.verifyAuth);
+        // this.router.use(tokenC.verifyAuth);
 
         // Creado objeto 
         const objMascotaController = new MascotaController();
